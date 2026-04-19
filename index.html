@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>코지 봇 — 도움말</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --surface3: #222636;
+    --border: #2a2f42;
+    --accent: #7c6df0;
+    --text: #e8eaf0;
+    --text-muted: #7c859e;
+    --text-dim: #4a5068;
+    --glow: rgba(124,109,240,0.2);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+  }
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(124,109,240,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,109,240,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events:none; z-index:0;
+  }
+
+  /* HEADER */
+  header {
+    position:sticky; top:0; z-index:100;
+    padding: 18px 36px;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom: 1px solid var(--border);
+    background: rgba(13,15,20,0.92);
+    backdrop-filter: blur(16px);
+  }
+  .logo { display:flex; align-items:center; gap:12px; }
+  .logo-icon {
+    width:40px; height:40px;
+    background: linear-gradient(135deg, #7c6df0, #5046e5);
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px;
+    box-shadow: 0 0 18px var(--glow);
+  }
+  .logo-text { display:flex; flex-direction:column; }
+  .logo-name {
+    font-size:20px; font-weight:900; letter-spacing:-0.5px;
+    background: linear-gradient(90deg,#fff 40%, #a89ef0);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .logo-sub {
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px; color:var(--text-dim);
+    letter-spacing:2px; text-transform:uppercase;
+  }
+  .search-box {
+    display:flex; align-items:center; gap:8px;
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:8px; padding:9px 14px; width:240px;
+    transition: border-color .2s;
+  }
+  .search-box:focus-within { border-color: var(--accent); }
+  .search-box input {
+    background:none; border:none; outline:none;
+    color:var(--text); font-family:'Noto Sans KR',sans-serif;
+    font-size:13px; width:100%;
+  }
+  .search-box input::placeholder { color:var(--text-dim); }
+
+  /* LAYOUT */
+  .layout { display:flex; min-height:calc(100vh - 73px); position:relative; z-index:1; }
+
+  /* SIDEBAR */
+  aside {
+    width:210px; flex-shrink:0;
+    padding:20px 12px;
+    border-right:1px solid var(--border);
+    position:sticky; top:73px;
+    height:calc(100vh - 73px);
+    overflow-y:auto;
+  }
+  aside::-webkit-scrollbar { width:4px; }
+  aside::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+  .sidebar-label {
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--text-dim); padding:0 10px; margin-bottom:6px; margin-top:12px;
+  }
+  .sidebar-label:first-child { margin-top:0; }
+
+  .cat-btn {
+    display:flex; align-items:center; gap:9px;
+    width:100%; padding:9px 10px;
+    border-radius:7px; border:none;
+    background:transparent; color:var(--text-muted);
+    font-family:'Noto Sans KR',sans-serif;
+    font-size:13px; font-weight:500;
+    cursor:pointer; transition:all .15s; text-align:left;
+    margin-bottom:1px;
+  }
+  .cat-btn:hover { background:var(--surface2); color:var(--text); }
+  .cat-btn.active {
+    background:rgba(124,109,240,0.13);
+    color:#c4bbff;
+    border-left:2px solid var(--accent);
+    padding-left:8px;
+  }
+  .cat-icon { font-size:15px; width:20px; text-align:center; }
+  .cat-count {
+    margin-left:auto;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px; color:var(--text-dim);
+    background:var(--surface3);
+    border-radius:3px; padding:1px 5px;
+  }
+
+  /* MAIN */
+  main { flex:1; padding:28px 36px; }
+
+  .section { display:none; animation: fadeIn .2s ease; }
+  .section.active { display:block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+  .section-header {
+    display:flex; align-items:center; gap:14px;
+    margin-bottom:22px; padding-bottom:16px;
+    border-bottom:1px solid var(--border);
+  }
+  .section-icon {
+    font-size:26px; width:50px; height:50px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:12px;
+  }
+  .section-title { font-size:20px; font-weight:700; }
+  .section-desc { font-size:12px; color:var(--text-muted); margin-top:3px; }
+
+  /* CMD GRID */
+  .cmd-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px,1fr));
+    gap:10px;
+  }
+  .cmd-card {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px; padding:14px 16px;
+    transition:all .18s; cursor:default;
+    position:relative; overflow:hidden;
+  }
+  .cmd-card::after {
+    content:''; position:absolute;
+    top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg,var(--accent),transparent);
+    opacity:0; transition:opacity .18s;
+  }
+  .cmd-card:hover {
+    border-color:rgba(124,109,240,0.35);
+    background:var(--surface2);
+    transform:translateY(-1px);
+    box-shadow:0 6px 24px rgba(0,0,0,0.35);
+  }
+  .cmd-card:hover::after { opacity:1; }
+  .cmd-name {
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px; font-weight:700;
+    color:#a89ef0; margin-bottom:6px;
+  }
+  .cmd-name span { color:var(--text-dim); font-weight:400; }
+  .cmd-desc { font-size:12px; color:var(--text-muted); line-height:1.6; }
+  .cmd-tag {
+    display:inline-block; margin-top:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px; padding:2px 7px;
+    border-radius:4px; border:1px solid;
+  }
+  .tag-admin { color:#f06292; border-color:rgba(240,98,146,0.3); background:rgba(240,98,146,0.07); }
+  .tag-game  { color:#5ee7b5; border-color:rgba(94,231,181,0.3);  background:rgba(94,231,181,0.07); }
+  .tag-eco   { color:#ffd54f; border-color:rgba(255,213,79,0.3);  background:rgba(255,213,79,0.07); }
+  .tag-util  { color:#80cbc4; border-color:rgba(128,203,196,0.3); background:rgba(128,203,196,0.07); }
+  .tag-event { color:#ce93d8; border-color:rgba(206,147,216,0.3); background:rgba(206,147,216,0.07); }
+
+  /* OVERVIEW */
+  .overview-grid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+    gap:10px; margin-bottom:28px;
+  }
+  .stat-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:16px;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .stat-num {
+    font-family:'JetBrains Mono',monospace;
+    font-size:28px; font-weight:700; color:var(--accent);
+  }
+  .stat-label { font-size:12px; color:var(--text-muted); }
+
+  .all-cats { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px; }
+  .cat-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:14px 16px;
+    display:flex; align-items:center; gap:12px;
+    cursor:pointer; transition:all .15s;
+  }
+  .cat-card:hover { border-color:rgba(124,109,240,0.4); background:var(--surface2); }
+  .cat-card-icon { font-size:22px; }
+  .cat-card-name { font-size:14px; font-weight:600; }
+  .cat-card-count { font-size:11px; color:var(--text-muted); margin-top:1px; }
+
+  /* NO RESULT */
+  .no-result {
+    text-align:center; padding:60px 0;
+    color:var(--text-dim); font-size:14px;
+  }
+  .no-result div { font-size:40px; margin-bottom:12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🤖</div>
+    <div class="logo-text">
+      <div class="logo-name">코지</div>
+      <div class="logo-sub">Help Center</div>
+    </div>
+  </div>
+  <div class="search-box">
+    <span style="color:var(--text-dim);font-size:13px">🔍</span>
+    <input type="text" id="searchInput" placeholder="명령어 검색...">
+  </div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="sidebar-label">전체</div>
+    <button class="cat-btn active" onclick="showSection('overview')" data-section="overview">
+      <span class="cat-icon">🏠</span> 홈
+    </button>
+
+    <div class="sidebar-label">카테고리</div>
+    <button class="cat-btn" onclick="showSection('admin')"   data-section="admin">
+      <span class="cat-icon">🛡️</span> 관리/모더레이션 <span class="cat-count" id="cnt-admin"></span>
+    </button>
+    <button class="cat-btn" onclick="showSection('game')"    data-section="game">
+      <span class="cat-icon">🎮</span> 게임/미니게임 <span class="cat-count" id="cnt-game"></span>
+    </button>
+    <button class="cat-btn" onclick="showSection('level')"   data-section="level">
+      <span class="cat-icon">⭐</span> 레벨 <span class="cat-count" id="cnt-level"></span>
+    </button>
+    <button class="cat-btn" onclick="showSection('rank')"    data-section="rank">
+      <span class="cat-icon">🏆</span> 랭킹 <span class="cat-count" id="cnt-rank"></span>
+    </button>
+    <button class="cat-btn" onclick="showSection('report')"  data-section="report">
+      <span class="cat-icon">📢</span> 신고 <span class="cat-count" id="cnt-report"></span>
+    </button>
+    <button class="cat-btn" onclick="showSection('gamble')"  data-section="gamble">
+      <span class="cat-icon">🎲</span> 도박 <span class="cat-count" id="cnt-gamble"></span>
+    </button>
+    <button class="cat-btn" onclick="showSection('meeting')" data-section="meeting">
+      <span class="cat-icon">💬</span> 면담 <span class="cat-count" id="cnt-meeting"></span>
+    </button>
+    <button class="cat-btn" onclick="showSection('bank')"    data-section="bank">
+      <span class="cat-icon">🏦</span> 은행 <span class="cat-count" id="cnt-bank"></span>
+    </button>
+    <button class="cat-btn" onclick="showSection('event')"   data-section="event">
+      <span class="cat-icon">🎉</span> 이벤트 <span class="cat-count" id="cnt-event"></span>
+    </button>
+    <button class="cat-btn" onclick="showSection('shop')"    data-section="shop">
+      <span class="cat-icon">🛒</span> 상점 <span class="cat-count" id="cnt-shop"></span>
+    </button>
+    <button class="cat-btn" onclick="showSection('vending')" data-section="vending">
+      <span class="cat-icon">🥤</span> 자판기 <span class="cat-count" id="cnt-vending"></span>
+    </button>
+    <button class="cat-btn" onclick="showSection('warn')"    data-section="warn">
+      <span class="cat-icon">⚠️</span> 경고 <span class="cat-count" id="cnt-warn"></span>
+    </button>
+  </aside>
+
+  <main id="mainArea">
+
+    <!-- ── 홈 ── -->
+    <div class="section active" id="sec-overview">
+      <div class="section-header">
+        <div class="section-icon">🏠</div>
+        <div>
+          <div class="section-title">코지 봇 도움말</div>
+          <div class="section-desc">모든 명령어를 카테고리별로 확인하세요</div>
+        </div>
+      </div>
+      <div class="overview-grid" id="overviewStats"></div>
+      <div class="sidebar-label" style="margin-bottom:12px">카테고리 바로가기</div>
+      <div class="all-cats" id="overviewCats"></div>
+    </div>
+
+    <!-- ── 관리 ── -->
+    <div class="section" id="sec-admin">
+      <div class="section-header">
+        <div class="section-icon">🛡️</div>
+        <div>
+          <div class="section-title">관리 / 모더레이션</div>
+          <div class="section-desc">서버 관리 및 모더레이션 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-admin"></div>
+    </div>
+
+    <!-- ── 게임 ── -->
+    <div class="section" id="sec-game">
+      <div class="section-header">
+        <div class="section-icon">🎮</div>
+        <div>
+          <div class="section-title">게임 / 미니게임</div>
+          <div class="section-desc">즐길 수 있는 미니게임 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-game"></div>
+    </div>
+
+    <!-- ── 레벨 ── -->
+    <div class="section" id="sec-level">
+      <div class="section-header">
+        <div class="section-icon">⭐</div>
+        <div>
+          <div class="section-title">레벨</div>
+          <div class="section-desc">경험치 및 레벨 관련 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-level"></div>
+    </div>
+
+    <!-- ── 랭킹 ── -->
+    <div class="section" id="sec-rank">
+      <div class="section-header">
+        <div class="section-icon">🏆</div>
+        <div>
+          <div class="section-title">랭킹</div>
+          <div class="section-desc">서버 내 순위 확인 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-rank"></div>
+    </div>
+
+    <!-- ── 신고 ── -->
+    <div class="section" id="sec-report">
+      <div class="section-header">
+        <div class="section-icon">📢</div>
+        <div>
+          <div class="section-title">신고</div>
+          <div class="section-desc">유저 신고 관련 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-report"></div>
+    </div>
+
+    <!-- ── 도박 ── -->
+    <div class="section" id="sec-gamble">
+      <div class="section-header">
+        <div class="section-icon">🎲</div>
+        <div>
+          <div class="section-title">도박</div>
+          <div class="section-desc">코인을 걸고 즐기는 도박 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-gamble"></div>
+    </div>
+
+    <!-- ── 면담 ── -->
+    <div class="section" id="sec-meeting">
+      <div class="section-header">
+        <div class="section-icon">💬</div>
+        <div>
+          <div class="section-title">면담</div>
+          <div class="section-desc">관리자 면담 관련 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-meeting"></div>
+    </div>
+
+    <!-- ── 은행 ── -->
+    <div class="section" id="sec-bank">
+      <div class="section-header">
+        <div class="section-icon">🏦</div>
+        <div>
+          <div class="section-title">은행</div>
+          <div class="section-desc">코인 입출금 및 계좌 관련 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-bank"></div>
+    </div>
+
+    <!-- ── 이벤트 ── -->
+    <div class="section" id="sec-event">
+      <div class="section-header">
+        <div class="section-icon">🎉</div>
+        <div>
+          <div class="section-title">이벤트</div>
+          <div class="section-desc">서버 이벤트 관련 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-event"></div>
+    </div>
+
+    <!-- ── 상점 ── -->
+    <div class="section" id="sec-shop">
+      <div class="section-header">
+        <div class="section-icon">🛒</div>
+        <div>
+          <div class="section-title">상점</div>
+          <div class="section-desc">아이템 구매 및 판매 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-shop"></div>
+    </div>
+
+    <!-- ── 자판기 ── -->
+    <div class="section" id="sec-vending">
+      <div class="section-header">
+        <div class="section-icon">🥤</div>
+        <div>
+          <div class="section-title">자판기</div>
+          <div class="section-desc">자판기 아이템 관련 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-vending"></div>
+    </div>
+
+    <!-- ── 경고 ── -->
+    <div class="section" id="sec-warn">
+      <div class="section-header">
+        <div class="section-icon">⚠️</div>
+        <div>
+          <div class="section-title">경고</div>
+          <div class="section-desc">경고 부여 및 확인 명령어</div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-warn"></div>
+    </div>
+
+    <!-- 검색 결과 -->
+    <div class="section" id="sec-search">
+      <div class="section-header">
+        <div class="section-icon">🔍</div>
+        <div>
+          <div class="section-title">검색 결과</div>
+          <div class="section-desc" id="searchDesc"></div>
+        </div>
+      </div>
+      <div class="cmd-grid" id="grid-search"></div>
+      <div class="no-result" id="noResult" style="display:none">
+        <div>😕</div>
+        명령어를 찾을 수 없어요
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// 📋 명령어 데이터 — 여기에 명령어 추가/수정하세요!
+// ═══════════════════════════════════════════════
+const COMMANDS = {
+  admin: {
+    icon: '🛡️', name: '관리/모더레이션', tag: 'admin',
+    cmds: [
+      { name: '/킥',     args: '<유저> [사유]',   desc: '유저를 서버에서 추방합니다.', tag: 'tag-admin' },
+      { name: '/밴',     args: '<유저> [사유]',   desc: '유저를 영구 차단합니다.', tag: 'tag-admin' },
+      { name: '/타임아웃', args: '<유저> <시간>', desc: '유저를 일정 시간 타임아웃합니다.', tag: 'tag-admin' },
+      { name: '/청소',   args: '<개수>',          desc: '채널의 메시지를 일괄 삭제합니다.', tag: 'tag-admin' },
+      { name: '/슬로우모드', args: '<초>',        desc: '채널 슬로우모드를 설정합니다.', tag: 'tag-admin' },
+      { name: '/잠금',   args: '[채널]',          desc: '채널을 잠금 처리합니다.', tag: 'tag-admin' },
+    ]
+  },
+  game: {
+    icon: '🎮', name: '게임/미니게임', tag: 'game',
+    cmds: [
+      { name: '/가위바위보', args: '<선택>',   desc: '봇과 가위바위보를 합니다.', tag: 'tag-game' },
+      { name: '/주사위',     args: '[면수]',   desc: '주사위를 굴립니다.', tag: 'tag-game' },
+      { name: '/룰렛',       args: '',         desc: '색 룰렛을 돌립니다.', tag: 'tag-game' },
+      { name: '/타자연습',   args: '',         desc: '타자 연습 미니게임을 시작합니다.', tag: 'tag-game' },
+      { name: '/끝말잇기',   args: '',         desc: '봇과 끝말잇기를 합니다.', tag: 'tag-game' },
+    ]
+  },
+  level: {
+    icon: '⭐', name: '레벨', tag: 'util',
+    cmds: [
+      { name: '/레벨',    args: '[유저]',        desc: '유저의 현재 레벨과 경험치를 확인합니다.', tag: 'tag-util' },
+      { name: '/레벨설정', args: '<유저> <레벨>', desc: '유저의 레벨을 강제 설정합니다.', tag: 'tag-admin' },
+      { name: '/경험치초기화', args: '<유저>',   desc: '유저의 경험치를 초기화합니다.', tag: 'tag-admin' },
+    ]
+  },
+  rank: {
+    icon: '🏆', name: '랭킹', tag: 'util',
+    cmds: [
+      { name: '/랭킹',     args: '[카테고리]',   desc: '서버 전체 랭킹을 표시합니다.', tag: 'tag-util' },
+      { name: '/레벨랭킹', args: '',             desc: '레벨 기준 랭킹을 표시합니다.', tag: 'tag-util' },
+      { name: '/코인랭킹', args: '',             desc: '보유 코인 기준 랭킹을 표시합니다.', tag: 'tag-eco' },
+    ]
+  },
+  report: {
+    icon: '📢', name: '신고', tag: 'util',
+    cmds: [
+      { name: '/신고',      args: '<유저> <사유>', desc: '유저를 관리자에게 신고합니다.', tag: 'tag-util' },
+      { name: '/신고목록',  args: '',              desc: '접수된 신고 목록을 확인합니다.', tag: 'tag-admin' },
+      { name: '/신고처리',  args: '<ID>',          desc: '신고를 처리 완료 상태로 변경합니다.', tag: 'tag-admin' },
+    ]
+  },
+  gamble: {
+    icon: '🎲', name: '도박', tag: 'eco',
+    cmds: [
+      { name: '/슬롯',    args: '<금액>',         desc: '슬롯머신을 돌립니다.', tag: 'tag-eco' },
+      { name: '/블랙잭',  args: '<금액>',         desc: '블랙잭 게임을 시작합니다.', tag: 'tag-eco' },
+      { name: '/홀짝',    args: '<금액> <홀/짝>', desc: '홀짝 도박을 합니다.', tag: 'tag-eco' },
+      { name: '/배팅',    args: '<금액>',         desc: '랜덤 배팅을 합니다.', tag: 'tag-eco' },
+    ]
+  },
+  meeting: {
+    icon: '💬', name: '면담', tag: 'util',
+    cmds: [
+      { name: '/면담신청',  args: '<사유>',        desc: '관리자에게 면담을 신청합니다.', tag: 'tag-util' },
+      { name: '/면담목록',  args: '',              desc: '대기 중인 면담 목록을 확인합니다.', tag: 'tag-admin' },
+      { name: '/면담수락',  args: '<ID>',          desc: '면담 신청을 수락합니다.', tag: 'tag-admin' },
+      { name: '/면담거절',  args: '<ID> [사유]',   desc: '면담 신청을 거절합니다.', tag: 'tag-admin' },
+    ]
+  },
+  bank: {
+    icon: '🏦', name: '은행', tag: 'eco',
+    cmds: [
+      { name: '/잔고',    args: '[유저]',         desc: '코인 잔고를 확인합니다.', tag: 'tag-eco' },
+      { name: '/송금',    args: '<유저> <금액>',  desc: '다른 유저에게 코인을 송금합니다.', tag: 'tag-eco' },
+      { name: '/입금',    args: '<금액>',         desc: '현금을 은행에 입금합니다.', tag: 'tag-eco' },
+      { name: '/출금',    args: '<금액>',         desc: '은행에서 현금을 출금합니다.', tag: 'tag-eco' },
+      { name: '/이자',    args: '',               desc: '은행 이자를 수령합니다.', tag: 'tag-eco' },
+    ]
+  },
+  event: {
+    icon: '🎉', name: '이벤트', tag: 'event',
+    cmds: [
+      { name: '/이벤트생성', args: '<제목> <설명>', desc: '새 이벤트를 생성합니다.', tag: 'tag-event' },
+      { name: '/이벤트목록', args: '',              desc: '진행 중인 이벤트 목록을 봅니다.', tag: 'tag-event' },
+      { name: '/이벤트참여', args: '<ID>',          desc: '이벤트에 참여합니다.', tag: 'tag-event' },
+      { name: '/이벤트종료', args: '<ID>',          desc: '이벤트를 종료하고 당첨자를 선정합니다.', tag: 'tag-admin' },
+    ]
+  },
+  shop: {
+    icon: '🛒', name: '상점', tag: 'eco',
+    cmds: [
+      { name: '/상점',     args: '',              desc: '구매 가능한 아이템 목록을 봅니다.', tag: 'tag-eco' },
+      { name: '/구매',     args: '<아이템> [수량]', desc: '아이템을 구매합니다.', tag: 'tag-eco' },
+      { name: '/인벤토리', args: '[유저]',         desc: '인벤토리를 확인합니다.', tag: 'tag-eco' },
+      { name: '/사용',     args: '<아이템>',       desc: '아이템을 사용합니다.', tag: 'tag-eco' },
+    ]
+  },
+  vending: {
+    icon: '🥤', name: '자판기', tag: 'eco',
+    cmds: [
+      { name: '/자판기',    args: '',             desc: '자판기 메뉴를 확인합니다.', tag: 'tag-eco' },
+      { name: '/뽑기',      args: '<코인>',       desc: '자판기에서 아이템을 뽑습니다.', tag: 'tag-eco' },
+      { name: '/자판기등록', args: '<아이템> <가격>', desc: '자판기에 아이템을 등록합니다.', tag: 'tag-admin' },
+    ]
+  },
+  warn: {
+    icon: '⚠️', name: '경고', tag: 'admin',
+    cmds: [
+      { name: '/경고',      args: '<유저> [사유]', desc: '유저에게 경고를 부여합니다.', tag: 'tag-admin' },
+      { name: '/경고확인',  args: '[유저]',        desc: '유저의 경고 내역을 확인합니다.', tag: 'tag-admin' },
+      { name: '/경고초기화', args: '<유저>',       desc: '유저의 경고를 모두 초기화합니다.', tag: 'tag-admin' },
+      { name: '/경고취소',  args: '<ID>',          desc: '특정 경고를 취소합니다.', tag: 'tag-admin' },
+    ]
+  },
+};
+
+// ── 카테고리 순서
+const CAT_ORDER = ['admin','game','level','rank','report','gamble','meeting','bank','event','shop','vending','warn'];
+
+// ── 명령어 카드 생성
+function makeCard(cmd) {
+  return `<div class="cmd-card">
+    <div class="cmd-name">${cmd.name}${cmd.args ? ` <span>${cmd.args}</span>` : ''}</div>
+    <div class="cmd-desc">${cmd.desc}</div>
+    <span class="cmd-tag ${cmd.tag}">${tagLabel(cmd.tag)}</span>
+  </div>`;
+}
+
+function tagLabel(t) {
+  return {
+    'tag-admin':'관리','tag-game':'게임',
+    'tag-eco':'경제','tag-util':'유틸','tag-event':'이벤트'
+  }[t] || '기타';
+}
+
+// ── 렌더링
+function render() {
+  let totalCmds = 0;
+  CAT_ORDER.forEach(key => {
+    const cat = COMMANDS[key];
+    const grid = document.getElementById('grid-' + key);
+    if (grid) grid.innerHTML = cat.cmds.map(makeCard).join('');
+    const cnt = document.getElementById('cnt-' + key);
+    if (cnt) cnt.textContent = cat.cmds.length;
+    totalCmds += cat.cmds.length;
+  });
+
+  // 홈 stats
+  document.getElementById('overviewStats').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${totalCmds}</div><div class="stat-label">총 명령어</div></div>
+    <div class="stat-card"><div class="stat-num">${CAT_ORDER.length}</div><div class="stat-label">카테고리</div></div>
+    <div class="stat-card"><div class="stat-num">1.0</div><div class="stat-label">버전</div></div>
+  `;
+
+  // 홈 카테고리 카드
+  document.getElementById('overviewCats').innerHTML = CAT_ORDER.map(key => {
+    const cat = COMMANDS[key];
+    return `<div class="cat-card" onclick="showSection('${key}')">
+      <div class="cat-card-icon">${cat.icon}</div>
+      <div>
+        <div class="cat-card-name">${cat.name}</div>
+        <div class="cat-card-count">${cat.cmds.length}개 명령어</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── 섹션 전환
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  const btn = document.querySelector(`[data-section="${id}"]`);
+  if (btn) btn.classList.add('active');
+  document.getElementById('searchInput').value = '';
+}
+
+// ── 검색
+document.getElementById('searchInput').addEventListener('input', function() {
+  const q = this.value.trim().toLowerCase();
+  if (!q) { showSection('overview'); return; }
+
+  const results = [];
+  CAT_ORDER.forEach(key => {
+    COMMANDS[key].cmds.forEach(cmd => {
+      if (cmd.name.includes(q) || cmd.desc.toLowerCase().includes(q) || (cmd.args||'').includes(q)) {
+        results.push(cmd);
+      }
+    });
+  });
+
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-search').classList.add('active');
+
+  document.getElementById('searchDesc').textContent = `"${q}" — ${results.length}개 결과`;
+  document.getElementById('grid-search').innerHTML = results.map(makeCard).join('');
+  document.getElementById('noResult').style.display = results.length ? 'none' : 'block';
+});
+
+render();
+</script>
+</body>
+</html>
